@@ -1,4 +1,5 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <!--
  @license
  Copyright 2019 Google LLC. All Rights Reserved.
@@ -6,13 +7,36 @@
 -->
 <html>
   <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
     <title>React Map</title>
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
 
     <link rel="stylesheet" type="text/css" href="./style.css" />
     <script type="module" src="./index.tsx"></script>
   </head>
   <body>
+
+
     <div id="root"></div>
+
+    <div id="fixed-bar">
+      <div id="trash-icons-container">
+        <img src="./icons/organico.svg" alt="" class="trash-icons" />
+        <img src="./icons/plastico.svg" alt="" class="trash-icons" />
+        <img src="./icons/vidro.svg" alt="" class="trash-icons" />
+        <img src="./icons/metal.svg" alt="" class="trash-icons" />
+        <img src="./icons/papel.svg" alt="" class="trash-icons" />
+      </div>
+      <div id="button-container" class="d-grid gap-2" style="height: 4rem">
+        <button class="btn btn-secondary fs-4" type="button">Marcar lixeira na localização atual</button>
+      </div>
+    </div>
   </body>
 </html>
