@@ -48,6 +48,7 @@ input {
 .trash-icons {
   width: 3rem;
   margin: auto; /* Adiciona um espaçamento entre as imagens */
+  cursor: pointer;
 }
 
 #trash-icons-container {

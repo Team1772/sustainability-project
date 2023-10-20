@@ -19,6 +19,7 @@ import { createRoot } from 'react-dom/client'
 import { Wrapper, Status } from '@googlemaps/react-wrapper'
 import { createCustomEqual } from 'fast-equals'
 import { isLatLngLiteral } from '@googlemaps/typescript-guards'
+import { FixedBar } from './fixedBar'
 import 'bootstrap/dist/css/bootstrap.css'
 
 const render = (status: Status) => {
@@ -26,30 +27,35 @@ const render = (status: Status) => {
 }
 
 const App: React.VFC = () => {
+  const [clicks, setClicks] = React.useState<google.maps.LatLng[]>([])
+  const [zoom, setZoom] = React.useState(19) // initial zoom
+  //const [icon, setIcon] = React.useState(google.maps.Marker)
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
     lat: 0,
     lng: 0
   })
-
-  navigator.geolocation.getCurrentPosition(position => {
-    console.log('LAT ATUAL: ' + position.coords.latitude)
-    console.log('LNG ATUAL: ' + position.coords.longitude)
-    const latAtual = position.coords.latitude
-    const lngAtual = position.coords.longitude
-
-    setCenter({
-      lat: latAtual,
-      lng: lngAtual
-    })
-  })
-  
-  const [clicks, setClicks] = React.useState<google.maps.LatLng[]>([])
-  const [zoom, setZoom] = React.useState(19) // initial zoom
+  const [latAtual, setLatAtual] = React.useState(0)
+  const [lngAtual, setLngAtual] = React.useState(0)
 
   const onClick = (e: google.maps.MapMouseEvent) => {
     // avoid directly mutating state
     setClicks([...clicks, e.latLng!])
   }
+
+  navigator.geolocation.getCurrentPosition(position => {
+    //console.log('LAT ATUAL: ' + position.coords.latitude)
+    //console.log('LNG ATUAL: ' + position.coords.longitude)
+    const lat = position.coords.latitude
+    const lng = position.coords.longitude
+
+    setCenter({
+      lat: lat,
+      lng: lng
+    })
+
+    setLatAtual(lat)
+    setLngAtual(lng)
+  })
 
   const onIdle = (m: google.maps.Map) => {
     console.log('onIdle')
@@ -117,6 +123,7 @@ const App: React.VFC = () => {
           zoom={zoom}
           style={{ flexGrow: '1', height: '100%' }}
         >
+
           {clicks.map((latLng, i) => (
             <Marker key={i} position={latLng} />
           ))}
@@ -124,6 +131,7 @@ const App: React.VFC = () => {
       </Wrapper>
       {/* Basic form for controlling center and zoom of map. */}
       {/*form*/}
+      <FixedBar lat={latAtual} lng={lngAtual} />
     </div>
   )
 }
