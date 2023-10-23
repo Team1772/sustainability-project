@@ -1,15 +1,18 @@
 export type Trash = {
-    lat: number;
-    lng: number;
-    type: TrashType;
-}
+  latLng: google.maps.LatLng;
+  type: TrashType;
+};
 
-export type TrashType = 'plastic' | 'metal' | 'paper' | 'glass' | 'organic';
+export type TrashType = "plastic" | "metal" | "paper" | "glass" | "organic";
 
-export const trashTypeToImageDirectory: Record<TrashType, string> = {
-    plastic: '../icons/plastic.svg',
-    metal: '../icons/metal.svg',
-    paper: '../icons/paper.svg',
-    glass: '../icons/glass.svg',
-    organic: '../icons/organic.svg',
-  };
+const icons = "icons";
+const svg = "svg";
+const getIconDirectory = (filename: string) => `${icons}/${filename}.${svg}`;
+
+export const trashTypeImage: Record<TrashType, string> = {
+  plastic: getIconDirectory("plastico"),
+  metal: getIconDirectory("metal"),
+  paper: getIconDirectory("papel"),
+  glass: getIconDirectory("vidro"),
+  organic: getIconDirectory("organico"),
+};

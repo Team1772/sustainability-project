@@ -1,145 +1,158 @@
-/*
- * Copyright 2021 Google LLC. All Rights Reserved.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
-import * as React from 'react'
-import { createRoot } from 'react-dom/client'
-import { Wrapper, Status } from '@googlemaps/react-wrapper'
-import { createCustomEqual } from 'fast-equals'
-import { isLatLngLiteral } from '@googlemaps/typescript-guards'
-import { FixedBar } from './fixedBar'
-import 'bootstrap/dist/css/bootstrap.css'
+import * as React from "react";
+import { createRoot } from "react-dom/client";
+import { Wrapper, Status } from "@googlemaps/react-wrapper";
+import { createCustomEqual } from "fast-equals";
+import { isLatLngLiteral } from "@googlemaps/typescript-guards";
+import "bootstrap/dist/css/bootstrap.css";
+import { Trash, trashTypeImage } from "./types/Trash";
 
 const render = (status: Status) => {
-  return <h1>{status}</h1>
-}
+  return <h1>{status}</h1>;
+};
 
 const App: React.VFC = () => {
-  const [clicks, setClicks] = React.useState<google.maps.LatLng[]>([])
-  const [zoom, setZoom] = React.useState(19) // initial zoom
-  //const [icon, setIcon] = React.useState(google.maps.Marker)
+  const [currentLat, setCurrentLat] = React.useState(0);
+  const [currentLng, setCurrentLng] = React.useState(0);
+  
+  const [trash, setTrash] = React.useState<Trash>({} as Trash);
+
+  const [trashes, setTrashes] = React.useState<Trash[]>([]);
+
+  const initialZoom = 19;
+  const [zoom, setZoom] = React.useState(initialZoom);
+
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>({
     lat: 0,
-    lng: 0
-  })
-  const [latAtual, setLatAtual] = React.useState(0)
-  const [lngAtual, setLngAtual] = React.useState(0)
+    lng: 0,
+  });
 
-  const onClick = (e: google.maps.MapMouseEvent) => {
-    // avoid directly mutating state
-    setClicks([...clicks, e.latLng!])
-  }
+  React.useEffect(() => {
+    navigator.geolocation.getCurrentPosition((position) => {
+      const latFromBrowser = position.coords.latitude;
+      const lngFromBrowser = position.coords.longitude;
+  
+      setCurrentLat(latFromBrowser);
+      setCurrentLng(lngFromBrowser);
+      
+      // Set the state variables inside the geolocation callback
+      setCenter({
+        lat: latFromBrowser,
+        lng: lngFromBrowser,
+      });
+  
+      setTrash({
+        latLng: new google.maps.LatLng(latFromBrowser, lngFromBrowser),
+        type: "organic",
+      });
+      console.log(trash)
+    });
+  }, []);
+  
+  const selectOrganic = () => setTrash({ ...trash, type: "organic" });
 
-  navigator.geolocation.getCurrentPosition(position => {
-    //console.log('LAT ATUAL: ' + position.coords.latitude)
-    //console.log('LNG ATUAL: ' + position.coords.longitude)
-    const lat = position.coords.latitude
-    const lng = position.coords.longitude
+  const selectPlastic = () => setTrash({ ...trash, type: "plastic" });
 
-    setCenter({
-      lat: lat,
-      lng: lng
-    })
+  const selectGlass = () => setTrash({ ...trash, type: "glass" });
 
-    setLatAtual(lat)
-    setLngAtual(lng)
-  })
+  const selectMetal = () => setTrash({ ...trash, type: "metal" });
+
+  const selectPaper = () => setTrash({ ...trash, type: "paper" });
+
+  const addTrashToCurrentLocation = () => {
+      setTrashes([
+        ...trashes,
+        {
+          latLng: new google.maps.LatLng(currentLat, currentLng),
+          type: trash.type,
+        },
+      ]);
+  };
+
+  const addTrashWithClick = (e: google.maps.MapMouseEvent) => {
+    setTrashes([...trashes, { latLng: e.latLng!, type: trash.type } as Trash]);
+  };
 
   const onIdle = (m: google.maps.Map) => {
-    console.log('onIdle')
-    setZoom(m.getZoom()!)
-    setCenter(m.getCenter()!.toJSON())
-  }
-
-  const form = (
-    <div
-      style={{
-        padding: '1rem',
-        flexBasis: '250px',
-        height: '100%',
-        overflow: 'auto'
-      }}
-    >
-      <label htmlFor='zoom'>Zoom</label>
-      <input
-        type='number'
-        id='zoom'
-        name='zoom'
-        value={zoom}
-        onChange={event => setZoom(Number(event.target.value))}
-      />
-      <br />
-      <label htmlFor='lat'>Latitude</label>
-      <input
-        type='number'
-        id='lat'
-        name='lat'
-        value={center.lat}
-        onChange={event =>
-          setCenter({ ...center, lat: Number(event.target.value) })
-        }
-      />
-      <br />
-      <label htmlFor='lng'>Longitude</label>
-      <input
-        type='number'
-        id='lng'
-        name='lng'
-        value={center.lng}
-        onChange={event =>
-          setCenter({ ...center, lng: Number(event.target.value) })
-        }
-      />
-      <h3>{clicks.length === 0 ? 'Click on map to add markers' : 'Clicks'}</h3>
-      {clicks.map((latLng, i) => (
-        <pre key={i}>{JSON.stringify(latLng.toJSON(), null, 2)}</pre>
-      ))}
-      <button onClick={() => setClicks([])}>Clear</button>
-    </div>
-  )
+    setZoom(m.getZoom()!);
+    setCenter(m.getCenter()!.toJSON());
+  };
 
   return (
-    <div style={{ display: 'flex', height: '100%' }}>
+    <div style={{ display: "flex", height: "100%" }}>
       <Wrapper
         apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY!}
         render={render}
       >
         <Map
           center={center}
-          onClick={onClick}
+          onClick={addTrashWithClick}
           onIdle={onIdle}
           zoom={zoom}
-          style={{ flexGrow: '1', height: '100%' }}
+          style={{ flexGrow: "1", height: "100%" }}
         >
-
-          {clicks.map((latLng, i) => (
-            <Marker key={i} position={latLng} />
+          {trashes.map((trash: Trash, i) => (
+            <Marker key={i} position={trash.latLng} icon={trashTypeImage[trash.type]}/>
           ))}
         </Map>
       </Wrapper>
-      {/* Basic form for controlling center and zoom of map. */}
-      {/*form*/}
-      <FixedBar lat={latAtual} lng={lngAtual} />
+
+      {/* Fixed bar */}
+      <div id="fixed-bar">
+        <div id="trash-icons-container">
+          <img
+            src="./icons/organico.svg"
+            alt=""
+            className="trash-icons"
+            onClick={selectOrganic}
+          />
+          <img
+            src="./icons/plastico.svg"
+            alt=""
+            className="trash-icons"
+            onClick={selectPlastic}
+          />
+          <img
+            src="./icons/vidro.svg"
+            alt=""
+            className="trash-icons"
+            onClick={selectGlass}
+          />
+          <img
+            src="./icons/metal.svg"
+            alt=""
+            className="trash-icons"
+            onClick={selectMetal}
+          />
+          <img
+            src="./icons/papel.svg"
+            alt=""
+            className="trash-icons"
+            onClick={selectPaper}
+          />
+        </div>
+        <div
+          id="button-container"
+          className="d-grid gap-2"
+          style={{ height: "4rem" }}
+        >
+          <button
+            className="btn btn-secondary fs-4"
+            type="button"
+            onClick={addTrashToCurrentLocation}
+          >
+            Marcar lixeira na localização atual
+          </button>
+        </div>
+      </div>
+      {/* End of fixed bar */}
     </div>
-  )
-}
+  );
+};
 interface MapProps extends google.maps.MapOptions {
-  style: { [key: string]: string }
-  onClick?: (e: google.maps.MapMouseEvent) => void
-  onIdle?: (map: google.maps.Map) => void
-  children?: React.ReactNode
+  style: { [key: string]: string };
+  onClick?: (e: google.maps.MapMouseEvent) => void;
+  onIdle?: (map: google.maps.Map) => void;
+  children?: React.ReactNode;
 }
 
 const Map: React.FC<MapProps> = ({
@@ -149,117 +162,112 @@ const Map: React.FC<MapProps> = ({
   style,
   ...options
 }) => {
-  const ref = React.useRef<HTMLDivElement>(null)
-  const [map, setMap] = React.useState<google.maps.Map>()
+  const ref = React.useRef<HTMLDivElement>(null);
+  const [map, setMap] = React.useState<google.maps.Map>();
 
   React.useEffect(() => {
     if (ref.current && !map) {
-      setMap(new window.google.maps.Map(ref.current, {}))
+      setMap(new window.google.maps.Map(ref.current, {}));
     }
-  }, [ref, map])
+  }, [ref, map]);
 
-  // because React does not do deep comparisons, a custom hook is used
-  // see discussion in https://github.com/googlemaps/js-samples/issues/946
   useDeepCompareEffectForMaps(() => {
     if (map) {
-      map.setOptions(options)
+      map.setOptions(options);
     }
-  }, [map, options])
+  }, [map, options]);
 
   React.useEffect(() => {
     if (map) {
-      ;['click', 'idle'].forEach(eventName =>
+      ["click", "idle"].forEach((eventName) =>
         google.maps.event.clearListeners(map, eventName)
-      )
+      );
 
       if (onClick) {
-        map.addListener('click', onClick)
+        map.addListener("click", onClick);
       }
 
       if (onIdle) {
-        map.addListener('idle', () => onIdle(map))
+        map.addListener("idle", () => onIdle(map));
       }
     }
-  }, [map, onClick, onIdle])
+  }, [map, onClick, onIdle]);
 
   return (
     <>
       <div ref={ref} style={style} />
-      {React.Children.map(children, child => {
+      {React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
-          // set the map prop on the child component
-          // @ts-ignore
-          return React.cloneElement(child, { map })
+          return React.cloneElement(child, { map });
         }
       })}
     </>
-  )
-}
+  );
+};
 
-const Marker: React.FC<google.maps.MarkerOptions> = options => {
-  const [marker, setMarker] = React.useState<google.maps.Marker>()
+const Marker: React.FC<google.maps.MarkerOptions & { icon: string }> = ({ icon, ...markerOptions }) => {
+  const [marker, setMarker] = React.useState<google.maps.Marker | null>(null);
 
   React.useEffect(() => {
     if (!marker) {
-      setMarker(new google.maps.Marker())
+      setMarker(new google.maps.Marker());
     }
 
-    // remove marker from map on unmount
     return () => {
       if (marker) {
-        marker.setMap(null)
+        marker.setMap(null);
       }
-    }
-  }, [marker])
+    };
+  }, [marker]);
 
   React.useEffect(() => {
     if (marker) {
-      marker.setOptions(options)
-      marker.setIcon('/icons/plastico.svg')
+      marker.setOptions(markerOptions);
+      marker.setIcon(icon);
     }
-  }, [marker, options])
+  }, [marker, markerOptions, icon]);
 
-  return null
-}
+  return null;
+};
 
 const deepCompareEqualsForMaps = createCustomEqual(
-  deepEqual => (a: any, b: any) => {
+  (deepEqual) => (a: any, b: any) => {
     if (
       isLatLngLiteral(a) ||
       a instanceof google.maps.LatLng ||
       isLatLngLiteral(b) ||
       b instanceof google.maps.LatLng
     ) {
-      return new google.maps.LatLng(a).equals(new google.maps.LatLng(b))
+      return new google.maps.LatLng(a).equals(new google.maps.LatLng(b));
     }
 
     // TODO extend to other types
 
     // use fast-equals for other objects
-    return deepEqual(a, b)
+    return deepEqual(a, b);
   }
-)
+);
 
-function useDeepCompareMemoize (value: any) {
-  const ref = React.useRef()
+function useDeepCompareMemoize(value: any) {
+  const ref = React.useRef();
 
   if (!deepCompareEqualsForMaps(value, ref.current)) {
-    ref.current = value
+    ref.current = value;
   }
 
-  return ref.current
+  return ref.current;
 }
 
-function useDeepCompareEffectForMaps (
+function useDeepCompareEffectForMaps(
   callback: React.EffectCallback,
   dependencies: any[]
 ) {
-  React.useEffect(callback, dependencies.map(useDeepCompareMemoize))
+  React.useEffect(callback, dependencies.map(useDeepCompareMemoize));
 }
 
-window.addEventListener('DOMContentLoaded', () => {
-  const root = createRoot(document.getElementById('root')!)
-  root.render(<App />)
-})
+window.addEventListener("DOMContentLoaded", () => {
+  const root = createRoot(document.getElementById("root")!);
+  root.render(<App />);
+});
 
-export {}
+export {};
