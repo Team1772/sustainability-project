@@ -136,7 +136,7 @@ const App: React.VFC = () => {
           style={{ height: "4rem" }}
         >
           <button
-            className="btn btn-secondary fs-4"
+            className="btn btn-dark fs-5"
             type="button"
             onClick={addTrashToCurrentLocation}
           >
@@ -224,6 +224,7 @@ const Marker: React.FC<google.maps.MarkerOptions & { icon: string }> = ({ icon, 
     if (marker) {
       marker.setOptions(markerOptions);
       marker.setIcon(icon);
+      marker.setTitle(markerOptions.title || "Trash");
     }
   }, [marker, markerOptions, icon]);
 
