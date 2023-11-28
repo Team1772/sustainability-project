@@ -1,22 +1,30 @@
-# Google Maps JavaScript Sample
+<h1 align="center">
+    <img src="./images/1772.png">
+    <p>Clean City</p> 
+</h1>
 
-This sample is generated from @googlemaps/js-samples located at
-https://github.com/googlemaps/js-samples.This sample has the following dependencies:
+## 📖 About
+**Clean City** is a project that aims to help people quickly find trash cans, reducing pollution in cities. This project was made for Eco Latam.
 
-- react
-- react-dom
-- @googlemaps/react-wrapper
-- @googlemaps/typescript-guards
+## 🔨 Tools
+- [React](https://react.dev/)
+- [Firebase](https://firebase.google.com/)
 
-## Setup
+## 💻 Setup
+````bash
+# Clone the project 
+$ git clone https://github.com/Team1772/sustainability-project.git
+````
+````bash
+# Enter directory  
+$ cd sustainability-project
+````
+````bash
+$ npm install
+$ npm start
+````
 
-```sh
-npm i
-npm start  # development
-npm run build  # production
-```
+## Sample
+We use this [repository](https://github.com/googlemaps/js-samples) as a sample to make this project.
 
-## Feedback
 
-For feedback related to this sample, please open a new issue on
-[GitHub](https://github.com/googlemaps/js-samples/issues).
