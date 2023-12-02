@@ -85,3 +85,35 @@ input {
   padding: 10px;
   text-align: center;
 }
+
+.trash-button{
+  background-color: transparent;
+  border-radius: 12px;
+  border: 3px solid rgb(211, 211, 211);
+  cursor: not-allowed;
+}
+
+.organic{
+  border-color: chocolate;
+  cursor: pointer;
+}
+
+.plastic{
+  border-color: red;
+  cursor: pointer;
+}
+
+.glass{
+  border-color: green;
+  cursor: pointer;
+}
+
+.metal{
+  border-color: yellow;
+  cursor: pointer;
+}
+
+.paper{
+  border-color: blue;
+  cursor: pointer;
+}

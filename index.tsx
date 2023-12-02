@@ -136,11 +136,12 @@ const App: React.VFC = () => {
           style={{ height: "4rem" }}
         >
           <button
-            className="btn btn-dark fs-5"
+            className={`trash-button ${trash.type ? trash.type : ""} `}
             type="button"
             onClick={addTrashToCurrentLocation}
+            disabled = {trash.type ? false : true}
           >
-            Set wastebin to current location
+            {trash.type ? `Set ${trash.type} wastebin to current location` : "Select a wastebin" }
           </button>
         </div>
       </div>
