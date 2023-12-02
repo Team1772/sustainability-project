@@ -10,6 +10,7 @@ const render = (status: Status) => {
   return <h1>{status}</h1>;
 };
 
+
 const App: React.VFC = () => {
   const [currentLat, setCurrentLat] = React.useState(0);
   const [currentLng, setCurrentLng] = React.useState(0);
