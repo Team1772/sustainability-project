@@ -100,7 +100,7 @@ export function FixedBar (props: FixedBarProps) {
           type='button'
           onClick={mostrar}
         >
-          Marcar lixeira na localização atual
+          Set wastebin to current location
         </button>
       </div>
     </div>

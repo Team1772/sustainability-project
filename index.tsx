@@ -13,7 +13,7 @@ const render = (status: Status) => {
 const App: React.VFC = () => {
   const [currentLat, setCurrentLat] = React.useState(0);
   const [currentLng, setCurrentLng] = React.useState(0);
-  
+
   const [trash, setTrash] = React.useState<Trash>({} as Trash);
 
   const [trashes, setTrashes] = React.useState<Trash[]>([]);
@@ -30,24 +30,24 @@ const App: React.VFC = () => {
     navigator.geolocation.getCurrentPosition((position) => {
       const latFromBrowser = position.coords.latitude;
       const lngFromBrowser = position.coords.longitude;
-  
+
       setCurrentLat(latFromBrowser);
       setCurrentLng(lngFromBrowser);
-      
+
       // Set the state variables inside the geolocation callback
       setCenter({
         lat: latFromBrowser,
         lng: lngFromBrowser,
       });
-  
+
       setTrash({
-        latLng: new google.maps.LatLng(latFromBrowser, lngFromBrowser),
+        latLng: new window.google.maps.LatLng(latFromBrowser, lngFromBrowser),
         type: "organic",
       });
       console.log(trash)
     });
   }, []);
-  
+
   const selectOrganic = () => setTrash({ ...trash, type: "organic" });
 
   const selectPlastic = () => setTrash({ ...trash, type: "plastic" });
@@ -59,13 +59,13 @@ const App: React.VFC = () => {
   const selectPaper = () => setTrash({ ...trash, type: "paper" });
 
   const addTrashToCurrentLocation = () => {
-      setTrashes([
-        ...trashes,
-        {
-          latLng: new google.maps.LatLng(currentLat, currentLng),
-          type: trash.type,
-        },
-      ]);
+    setTrashes([
+      ...trashes,
+      {
+        latLng: new google.maps.LatLng(currentLat, currentLng),
+        type: trash.type,
+      },
+    ]);
   };
 
   const addTrashWithClick = (e: google.maps.MapMouseEvent) => {
@@ -91,7 +91,7 @@ const App: React.VFC = () => {
           style={{ flexGrow: "1", height: "100%" }}
         >
           {trashes.map((trash: Trash, i) => (
-            <Marker key={i} position={trash.latLng} icon={trashTypeImage[trash.type]}/>
+            <Marker key={i} position={trash.latLng} icon={trashTypeImage[trash.type]} />
           ))}
         </Map>
       </Wrapper>
@@ -100,31 +100,31 @@ const App: React.VFC = () => {
       <div id="fixed-bar">
         <div id="trash-icons-container">
           <img
-            src="./icons/organico.svg"
+            src={trash.type === "organic" ? "./icons/organico.svg" : "./icons/organicoVazado.svg"}
             alt=""
             className="trash-icons"
             onClick={selectOrganic}
           />
           <img
-            src="./icons/plastico.svg"
+            src={trash.type === "plastic" ? "./icons/plastico.svg" : "./icons/plasticoVazado.svg"}
             alt=""
             className="trash-icons"
             onClick={selectPlastic}
           />
           <img
-            src="./icons/vidro.svg"
+            src={trash.type === "glass" ? "./icons/vidro.svg" : "./icons/vidroVazado.svg"}
             alt=""
             className="trash-icons"
             onClick={selectGlass}
           />
           <img
-            src="./icons/metal.svg"
+            src={trash.type === "metal" ? "./icons/metal.svg" : "./icons/metalVazado.svg"}
             alt=""
             className="trash-icons"
             onClick={selectMetal}
           />
           <img
-            src="./icons/papel.svg"
+            src={trash.type === "paper" ? "./icons/papel.svg" : "./icons/papelVazado.svg"}
             alt=""
             className="trash-icons"
             onClick={selectPaper}
@@ -140,7 +140,7 @@ const App: React.VFC = () => {
             type="button"
             onClick={addTrashToCurrentLocation}
           >
-            Marcar lixeira na localização atual
+            Set wastebin to current location
           </button>
         </div>
       </div>
@@ -271,4 +271,4 @@ window.addEventListener("DOMContentLoaded", () => {
   root.render(<App />);
 });
 
-export {};
+export { };
