@@ -4,7 +4,7 @@
 </h1>
 
 ## 📖 About
-**Eco Blazer** is a project that aims to help people quickly find trash cans, reducing pollution in cities. This project was made for Eco Latam.
+**EcoBlazer** is a project that aims to help people quickly find trash cans, reducing pollution in cities. This project was made for Eco Latam.
 
 ## 🔨 Tools
 - [React](https://react.dev/)

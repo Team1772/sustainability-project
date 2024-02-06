@@ -1,12 +1,12 @@
 import { BaseModal } from './BaseModal'
 import React from 'react'
-type BaseModalWrapperProps = {
+
+type TrashHelpModalProps = {
   isModalVisible: boolean
   onBackDropClick: () => void
 }
 
-export const TrashHelpModal: React.FC<BaseModalWrapperProps> = ({
-  area,
+export const TrashHelpModal: React.FC<TrashHelpModalProps> = ({
   isModalVisible,
   onBackDropClick
 }) => {
@@ -14,19 +14,56 @@ export const TrashHelpModal: React.FC<BaseModalWrapperProps> = ({
 
   return (
     <BaseModal onBackDropClick={onBackDropClick}>
-      <div>
-        <h1>
-          O objetivo do Teamlist é proporcionar uma gestão e controle de tarefas
-          poderá visualizar todo o fluxo de trabalho da área.
-        </h1>
-
+      <div
+        style={{
+          textAlign: 'center',
+          padding: 5,
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          width: '100%',
+          fontSize: '1.3rem'
+        }}
+      >
+        <img
+          src='./logo.png'
+          alt='Trash Bins'
+          style={{ width: '40%', height: 'auto' }}
+        />
+        <h1>Types of Trash Bins</h1>
         <p>
-          As tarefas estão organizadas entre listas: Com o desenvolvimento dos
-          membros para a realização de uma tarefa, ela será atribuída a
-          diferentes listas. Essa metodologia de trabalho é chamada de Kanban.
+          There are 5 different types of trash bins, each intended for a
+          specific type of waste. Here they are:
         </p>
 
-        <buuton onClick={onBackDropClick}>Entendido</buuton>
+        <ul id='trashModal'>
+          <li>
+            <img src='/icons/organico.svg'></img>
+            <strong>Organic:</strong> Biodegradable waste, such as food scraps.
+          </li>
+          <li>
+            <img src='/icons/plastico.svg'></img>
+            <strong>Plastic:</strong> Plastic materials, like bottles and
+            packaging.
+          </li>
+          <li>
+            <img src='/icons/vidro.svg'></img>
+            <strong>Glass:</strong> Glass containers, jars, etc.
+          </li>
+          <li>
+            <img src='/icons/metal.svg'></img>
+            <strong>Metal:</strong> Metallic materials, such as aluminum cans.
+          </li>
+          <li>
+            <img src='/icons/papel.svg'></img>
+            <strong>Paper:</strong> Paper, cardboard, and paper products in
+            general.
+          </li>
+        </ul>
+
+        <button id='buttonModal' onClick={onBackDropClick}>
+          Got It
+        </button>
       </div>
     </BaseModal>
   )

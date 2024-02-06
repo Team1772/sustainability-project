@@ -90,7 +90,7 @@ const App: React.VFC = () => {
   }
 
   const addTrashWithClick = (e: google.maps.MapMouseEvent) => {
-    if(!trash.type) return
+    if (!trash.type) return
     setTrashes([...trashes, { latLng: e.latLng!, type: trash.type } as Trash])
   }
 
@@ -125,9 +125,19 @@ const App: React.VFC = () => {
         </Map>
       </Wrapper>
 
+      <div id='top-bar'>
+        <img
+          src='./logo.png'
+          alt='Trash Bins'
+          style={{ width: '20%', height: 'auto' }}
+        />
+      </div>
+
       {/* Fixed bar */}
       <div id='fixed-bar'>
-        <button onClick={toggleModal}>Teste</button>
+        <button id='trashInfoButton' onClick={toggleModal}>
+          Trash Types
+        </button>
         <TrashHelpModal
           isModalVisible={isModalVisible}
           onBackDropClick={toggleModal}
@@ -201,6 +211,7 @@ const App: React.VFC = () => {
           </button>
         </div>
       </div>
+
       {/* End of fixed bar */}
     </div>
   )
